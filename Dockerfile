@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -10,9 +10,6 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring gd
 
@@ -20,14 +17,14 @@ RUN docker-php-ext-install pdo_mysql mbstring gd
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /var/www/html
+WORKDIR /app
 
-# Copy all files first
-COPY . /var/www/html
+# Copy all project files
+COPY . .
 
-# Install dependencies if composer.json exists
-RUN if [ -f composer.json ]; then composer install --no-interaction --optimize-autoloader --no-dev; fi
+# Install composer dependencies
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-EXPOSE 80
+EXPOSE 8080
 
-CMD php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=80
+CMD php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=8080
