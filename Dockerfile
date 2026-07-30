@@ -15,10 +15,16 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-COPY . /app
+# Copy all files
+COPY . .
 
-RUN composer install --no-interaction --optimize-autoloader --no-dev
-
-EXPOSE 8080
-
-CMD php artisan serve --host=0.0.0.0 --port=8080
+# Find where composer.json is and run composer & artisan from there
+CMD sh -c "\
+  TARGET_DIR=\$(find /app -name 'composer.json' -exec dirname {} \;) ; \
+  if [ -z \"\$TARGET_DIR\" ]; then TARGET_DIR=/app; fi ; \
+  cd \$TARGET_DIR ; \
+  composer install --no-interaction --optimize-autoloader --no-dev ; \
+  php artisan config:cache ; \
+  php artisan route:cache ; \
+  php artisan serve --host=0.0.0.0 --port=8080 \
+"
