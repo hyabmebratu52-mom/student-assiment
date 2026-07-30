@@ -15,10 +15,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# Copy all files
-COPY . .
+COPY . /app
 
-# Find where composer.json is and run composer & artisan from there
+EXPOSE 8080
+
 CMD sh -c "\
   TARGET_DIR=\$(find /app -name 'composer.json' -exec dirname {} \;) ; \
   if [ -z \"\$TARGET_DIR\" ]; then TARGET_DIR=/app; fi ; \
