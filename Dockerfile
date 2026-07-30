@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exts-png gd
+RUN docker-php-ext-install pdo_mysql mbstring exts png gd || docker-php-ext-install pdo_mysql mbstring gd
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -28,7 +28,6 @@ COPY . /var/www
 # Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Expose port 80
 EXPOSE 80
 
 CMD php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=80
