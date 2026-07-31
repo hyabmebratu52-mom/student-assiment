@@ -6,9 +6,9 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>Student Assignment</title>
     
-    <!-- React እና Vite በ Render ላይ በትክክል እንዲጫኑ የሚያስገድድ -->
+    <!-- app.jsx የነበረውን ወደ app.js ቀይረነዋል -->
     @viteReactRefresh
-    @vite(['resources/js/app.jsx', 'resources/js/app.css'])
+    @vite(['resources/js/app.js'])
 </head>
 <body>
     <div id="app"></div>
